@@ -23,14 +23,30 @@ const SEED = `
   INSERT INTO pages(name, is_home_page) values('Contact', false);
 
 
-  INSERT INTO content(name, body, page_id) values ('Welcome to ACME Web', 'You are free to navigate the site', 1);
+  INSERT INTO content(name, body, page_id) values ('Acme Web: Home', '
+  <h2>Welcome to the Home Page</h2>
+  <div>The online portal to all Acme services and products.</div>
+  ', 1);
 
-  INSERT INTO content(name, body, page_id) values ('Moe', 'Moe is the CEO!', 2);
-  INSERT INTO content(name, body, page_id) values ('Curly', 'Curly is the CEO!', 2);
-  INSERT INTO content(name, body, page_id) values ('Larry', 'Larry is the CEO!', 2);
+  INSERT INTO content(name, body, page_id) values ('Acme Web: Employees', '
+  <h2>Moe</h2>
+  <div>Moe is our CEO!!!</div>
 
-  INSERT INTO content(name, body, page_id) values ('Phone', 'Please call as at 555-555-5555', 3);
-  INSERT INTO content(name, body, page_id) values ('Fax', 'Please fax as at 555-555-5556', 3);
+  <h2>Larry</h2>
+  <div>Larry is our CTO!!!</div>
+
+  <h2>Curly</h2>
+  <div>Curly is the COO!!!</div>
+  ', 2);
+
+
+  INSERT INTO content(name, body, page_id) values ('Acme Web: Contact Us', '
+  <h2>Phone</h2>
+  <div>Calls us at 212-555-1212</div>
+
+  <h2>Fax</h2>
+  <div>Fax us at 212-555-1212</div>
+  ', 3);
 `;
 
 const getPages = () => {
@@ -40,16 +56,15 @@ const getPages = () => {
 const getPage = id => {
   return client
     .query('SELECT * from pages WHERE id = $1', [id])
-    .then(response => response.rows[0]);
+    .then(response => response.rows[0])
+    .catch(ex => console.log(ex));
 };
 
 const getContent = page_id => {
   return client
-    .query(
-      'SELECT pages.id, pages.name, content.name as contentName, content.body from content join pages on pages.id = content.page_id where page_id = $1',
-      [page_id]
-    )
-    .then(response => response.rows[0]);
+    .query('SELECT * from content where page_id = $1', [page_id])
+    .then(response => response.rows[0])
+    .catch(ex => console.log(ex));
 };
 
 const sync = () => {
